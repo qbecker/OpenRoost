@@ -1,0 +1,2 @@
+This package will contain a worker whos sole job is to read data from the temperature sensor(s)
+and enter it into the database
