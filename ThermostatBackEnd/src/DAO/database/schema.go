@@ -1,5 +1,7 @@
 package database
 
-const Schema = `CREATE TABLE IF NOT EXISTS 'Settings' (
+const Schema1 = `CREATE TABLE IF NOT EXISTS 'Settings' (
 	'setTemp'	INTEGER NOT NULL 
-); CREATE TABLE IF NOT EXISTS 'DAILYDATA' ('Timestamp' TEXT, 'Reading' INTEGER);`
+); `
+
+const Schema2 = ` CREATE TABLE IF NOT EXISTS 'DAILYDATA' ('Timestamp' TEXT, 'Reading' INTEGER); `

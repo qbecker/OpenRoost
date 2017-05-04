@@ -1,7 +1,9 @@
 package database
 
 import _ "github.com/mattn/go-sqlite3"
-import "time"
+import "fmt"
+import "log"
+import "database/sql"
 
 const (
 	dbFile = "roost.db"
@@ -9,24 +11,26 @@ const (
 )
 
 func InitDB() {
-	ExecuteTransactionalDDL(Schema)
+	ExecuteTransactionalDDL(Schema1)
+	ExecuteTransactionalDDL(Schema2)
 }
 
 func InsertSensorData(data int) {
 	transaction, err := getDB().Begin()
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 	defer transaction.Commit()
 	statement, err := transaction.Prepare(InsertSensorDataQuery)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-	_, err = statement.Exec(data, fmt.Sprintf(time.Now()))
+	_, err = statement.Exec(data, fmt.Sprintf("a time"))
 	if err != nil {
 		log.Fatal(err)
 
 	}
+	transaction.Commit()
 
 }
 func ExecuteTransactionalSingleRowQuery(query string, selection []interface{}, targets ...interface{}) error {
@@ -47,8 +51,26 @@ func ExecuteTransactionalSingleRowQuery(query string, selection []interface{}, t
 	return nil
 }
 
+func ExecuteTransactionalDDL(query string, args ...interface{}) error {
+	transaction, err := getDB().Begin()
+	defer transaction.Commit()
+	if err != nil {
+		return err
+	}
+	stmt, err := transaction.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	if _, err := stmt.Exec(args...); err != nil {
+		transaction.Rollback()
+		return err
+	}
+	return nil
+}
+
 var getDB = func() func() *sql.DB {
-	db, err := sql.Open(driver, fmt.Sprintf("%v%v", utils.DatabaseDirectory(), dbFile))
+	db, err := sql.Open(driver, "./foo.db")
 	if err != nil {
 		panic(err)
 	}

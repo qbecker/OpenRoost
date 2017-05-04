@@ -3,6 +3,7 @@ package SensorReader
 import "time"
 import "fmt"
 import "math/rand"
+import "../DAO/database"
 
 //adding sudo data for testing
 
@@ -21,4 +22,5 @@ func readSensor() {
 func writeData(data int) {
 	fmt.Println("Writing sensor reading")
 	fmt.Println(data)
+	database.InsertSensorData(data)
 }

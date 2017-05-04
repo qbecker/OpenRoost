@@ -1,12 +1,19 @@
 package main
 
 import (
-        "log"
-        "./SensorReader")
-
+	"./DAO/database"
+	"./SensorReader"
+	"log"
+)
 
 func main() {
 	log.Println("Hello,World")
-	 go SensorReader.StartSensorReader();
-	 select{}
+	database.InitDB()
+	go SensorReader.StartSensorReader()
+	log.Println("Hello,World")
+	log.Println("Hello,World")
+	log.Println("Hello,World")
+	log.Println("Hello,World")
+	log.Println("Hello,World")
+	select {}
 }
