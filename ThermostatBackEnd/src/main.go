@@ -2,18 +2,16 @@ package main
 
 import (
 	"./DAO/database"
+	"./HVACController"
 	"./SensorReader"
 	"log"
 )
 
 func main() {
-	log.Println("Hello,World")
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.Println("Hello,World!")
 	database.InitDB()
 	go SensorReader.StartSensorReader()
-	log.Println("Hello,World")
-	log.Println("Hello,World")
-	log.Println("Hello,World")
-	log.Println("Hello,World")
-	log.Println("Hello,World")
+	go hvaccontroller.StartHVACController()
 	select {}
 }

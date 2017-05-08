@@ -70,7 +70,7 @@ func ExecuteTransactionalDDL(query string, args ...interface{}) error {
 }
 
 var getDB = func() func() *sql.DB {
-	db, err := sql.Open(driver, "./foo.db")
+	db, err := sql.Open(driver, "../foo.db")
 	if err != nil {
 		panic(err)
 	}
