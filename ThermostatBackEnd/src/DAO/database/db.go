@@ -26,7 +26,6 @@ func InsertSensorData(data int) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//strconv.FormatInt(int64(123), 10)
 	_, err = statement.Exec(fmt.Sprintf("%d", time.Now().Unix), data)
 	if err != nil {
 		log.Fatal(err)
