@@ -16,6 +16,25 @@ func InitDB() {
 	ExecuteTransactionalDDL(Schema2)
 }
 
+func InsertCurrentSetTemp(data int) {
+	transaction, err := getDB().Begin()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer transaction.Commit()
+	statement, err := transaction.Prepare(InsertCurrent)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = statement.Exec(data)
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	transaction.Commit()
+
+}
+
 func InsertSensorData(data int) {
 	transaction, err := getDB().Begin()
 	if err != nil {

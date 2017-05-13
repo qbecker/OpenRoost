@@ -7,13 +7,14 @@ import (
 
 func StartYoke() {
 	log.Println("starting Yoke")
-	http.HandleFunc("/settemp", setTemp)
-	http.HandleFunc("/sethometemp", coolOn)
-	http.HandleFunc("/setawaytemp", heatOn)
-	http.HandleFunc("/setzipcode", coolOff)
-	http.HandleFunc("/heatoff", heatOff)
-	http.HandleFunc("/fanon", fanOn)
-	http.HandleFunc("/fanoff", fanOff)
-	http.HandleFunc("/getstatus", getStatus)
-	log.Fatal(http.ListenAndServe(":9093", nil))
+	yokeContr := http.NewServeMux()
+	yokeContr.HandleFunc("/settemp/", setTemp)
+	yokeContr.HandleFunc("/sethometemp", coolOn)
+	yokeContr.HandleFunc("/setawaytemp", heatOn)
+	yokeContr.HandleFunc("/setzipcode", coolOff)
+	yokeContr.HandleFunc("/heatoff", heatOff)
+	yokeContr.HandleFunc("/fanon", fanOn)
+	yokeContr.HandleFunc("/fanoff", fanOff)
+	yokeContr.HandleFunc("/getstatus", getStatus)
+	log.Fatal(http.ListenAndServe(":8082", yokeContr))
 }

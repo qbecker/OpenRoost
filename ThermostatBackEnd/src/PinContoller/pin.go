@@ -1,12 +1,5 @@
 package pinController
 
-/*
-I DID NOT WRITE ALL OF THIS. ALL CREDIT GOES TO NATHAN OSMAN
-https://github.com/nathan-osman/go-rpigpio/blob/master/pin.go
-
-Changes may have been made
-*/
-
 import (
 	"fmt"
 	"io/ioutil"
@@ -18,16 +11,16 @@ import (
 type Direction int
 
 const (
-	IN  = iota // pin is used for input
-	OUT        // pin is used for output
+	IN = iota
+	OUT
 )
 
 // Indicate the current state of the pin.
 type Value int
 
 const (
-	LOW  = iota // pin is low (off)
-	HIGH        // pin is high (on)
+	LOW = iota
+	HIGH
 )
 
 // Determine if a specific pin is exported.

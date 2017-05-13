@@ -6,13 +6,14 @@ import (
 )
 
 func StartHVACController() {
+	HVACContr := http.NewServeMux()
 	log.Println("starting HVAC Controller")
-	http.HandleFunc("/coolon", coolOn)
-	http.HandleFunc("/heaton", heatOn)
-	http.HandleFunc("/cooloff", coolOff)
-	http.HandleFunc("/heatoff", heatOff)
-	http.HandleFunc("/fanon", fanOn)
-	http.HandleFunc("/fanoff", fanOff)
-	http.HandleFunc("/getstatus", getStatus)
-	log.Fatal(http.ListenAndServe(":9093", nil))
+	HVACContr.HandleFunc("/coolon", coolOn)
+	HVACContr.HandleFunc("/heaton", heatOn)
+	HVACContr.HandleFunc("/cooloff", coolOff)
+	HVACContr.HandleFunc("/heatoff", heatOff)
+	HVACContr.HandleFunc("/fanon", fanOn)
+	HVACContr.HandleFunc("/fanoff", fanOff)
+	HVACContr.HandleFunc("/getstatus", getStatus)
+	log.Fatal(http.ListenAndServe(":8081", HVACContr))
 }

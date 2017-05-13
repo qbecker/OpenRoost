@@ -4,6 +4,7 @@ import (
 	"./DAO/database"
 	"./HVACController"
 	"./SensorReader"
+	"./Yoke"
 	"log"
 )
 
@@ -13,5 +14,6 @@ func main() {
 	database.InitDB()
 	go SensorReader.StartSensorReader()
 	go hvaccontroller.StartHVACController()
+	go yoke.StartYoke()
 	select {}
 }
