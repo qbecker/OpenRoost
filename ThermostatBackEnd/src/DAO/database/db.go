@@ -14,6 +14,58 @@ const (
 func InitDB() {
 	ExecuteTransactionalDDL(Schema1)
 	ExecuteTransactionalDDL(Schema2)
+	ExecuteTransactionalDDL(Schema3)
+}
+func InsertHomeTemp(data int){
+	transaction, err := getDB().Begin()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer transaction.Commit()
+	statement, err := transaction.Prepare(InsertHome)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = statement.Exec(data)
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	transaction.Commit()
+}
+func InsertAwayTemp(data int){
+	transaction, err := getDB().Begin()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer transaction.Commit()
+	statement, err := transaction.Prepare(InsertAway)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = statement.Exec(data)
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	transaction.Commit()
+}
+func InsertZipCode(data int){
+	transaction, err := getDB().Begin()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer transaction.Commit()
+	statement, err := transaction.Prepare(InsertZip)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = statement.Exec(data)
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	transaction.Commit()
 }
 
 func InsertCurrentSetTemp(data int) {

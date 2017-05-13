@@ -2,9 +2,7 @@ package yoke
 
 import (
 	"../DAO/database"
-	//"encoding/json"
 	"io"
-	//"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -28,6 +26,57 @@ func setTemp(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "Accepted")
 	}
 
+}
+
+func setZipCode(w http.ResponseWriter, r *http.Request){
+	log.Println("Attempting to set zip code from yoke")
+	log.Println(r.URL.Path)
+	temp := strings.Split(r.URL.Path, "/")
+	log.Println(temp[2])
+	i, err := strconv.Atoi(temp[2])
+	if err != nil {
+		log.Println(err)
+		io.WriteString(w, "denied")
+
+	} else {
+		log.Println(i)
+		database.InsertZipCode(i)
+		io.WriteString(w, "Accepted")
+	}
+}
+
+func setHomeTemp(w http.ResponseWriter, r *http.Request){
+	log.Println("Attempting to set home temp from yoke")
+	log.Println(r.URL.Path)
+	temp := strings.Split(r.URL.Path, "/")
+	log.Println(temp[2])
+	i, err := strconv.Atoi(temp[2])
+	if err != nil {
+		log.Println(err)
+		io.WriteString(w, "denied")
+
+	} else {
+		log.Println(i)
+		database.InsertHomeTemp(i)
+		io.WriteString(w, "Accepted")
+	}
+}
+
+func setAwayTemp(w http.ResponseWriter, r *http.Request){
+	log.Println("Attempting to set away temp from yoke")
+	log.Println(r.URL.Path)
+	temp := strings.Split(r.URL.Path, "/")
+	log.Println(temp[2])
+	i, err := strconv.Atoi(temp[2])
+	if err != nil {
+		log.Println(err)
+		io.WriteString(w, "denied")
+
+	} else {
+		log.Println(i)
+		database.InsertAwayTemp(i)
+		io.WriteString(w, "Accepted")
+	}
 }
 
 func coolOn(w http.ResponseWriter, r *http.Request) {
