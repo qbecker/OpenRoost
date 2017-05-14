@@ -6,4 +6,5 @@ const (
 	InsertZip = "UPDATE Settings SET zipCode = ? WHERE APPNAME = 'ROOST'"
 	InsertHome = "UPDATE Settings SET setTempHome = ? WHERE APPNAME = 'ROOST'"
 	InsertAway = "UPDATE Settings SET setTempAway = ? WHERE APPNAME = 'ROOST'"
+	InsertIsHome = "UPDATE Settings SET isHome = ? WHERE APPNAME = 'ROOST'"
 )

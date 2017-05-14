@@ -9,6 +9,49 @@ import (
 	"strings"
 )
 
+func isHome(w http.ResponseWriter, r *http.Request){
+	log.Println("Attempting to set isHome from yoke")
+	log.Println(r.URL.Path)
+	temp := strings.Split(r.URL.Path, "/")
+	log.Println(temp[2])
+	i, err := strconv.Atoi(temp[2])
+	if err != nil {
+		// handle error
+		log.Println(err)
+		io.WriteString(w, "denied")
+
+	} else {
+		if i > 1{
+			io.WriteString(w, "denied")
+		}else{
+			log.Println(i)
+			database.InsertHomeOrAway(i)
+			io.WriteString(w, "Accepted")
+		}
+	}
+}
+func isAway(w http.ResponseWriter, r *http.Request){
+	log.Println("Attempting to set isAway from yoke")
+	log.Println(r.URL.Path)
+	temp := strings.Split(r.URL.Path, "/")
+	log.Println(temp[2])
+	i, err := strconv.Atoi(temp[2])
+	if err != nil {
+		// handle error
+		log.Println(err)
+		io.WriteString(w, "denied")
+
+	} else {
+		if i > 1{
+			io.WriteString(w, "denied")
+		}else{
+			log.Println(i)
+			database.InsertHomeOrAway(i)
+			io.WriteString(w, "Accepted")
+		}
+	}
+}
+
 func setTemp(w http.ResponseWriter, r *http.Request) {
 	log.Println("Attempting to set temp from yoke")
 	log.Println(r.URL.Path)

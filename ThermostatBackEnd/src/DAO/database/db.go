@@ -15,6 +15,23 @@ func InitDB() {
 	ExecuteTransactionalDDL(Schema1)
 	ExecuteTransactionalDDL(Schema2)
 	ExecuteTransactionalDDL(Schema3)
+	ExecuteTransactionalDDL(Schema4)
+}
+func InsertHomeOrAway(data int){
+	transaction, err := getDB().Begin()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer transaction.Commit()
+	statement, err := transaction.Prepare(InsertIsHome)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = statement.Exec(data)
+	if err != nil {
+		log.Fatal(err)
+	}
+	transaction.Commit()
 }
 func InsertHomeTemp(data int){
 	transaction, err := getDB().Begin()
@@ -29,7 +46,6 @@ func InsertHomeTemp(data int){
 	_, err = statement.Exec(data)
 	if err != nil {
 		log.Fatal(err)
-
 	}
 	transaction.Commit()
 }
@@ -84,7 +100,6 @@ func InsertCurrentSetTemp(data int) {
 
 	}
 	transaction.Commit()
-
 }
 
 func InsertSensorData(data int) {
@@ -97,10 +112,12 @@ func InsertSensorData(data int) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = statement.Exec(fmt.Sprintf("%d", time.Now().Unix), data)
+	now := time.Now()
+	 secs := now.Unix()
+	 log.Println(secs)
+	_, err = statement.Exec(fmt.Sprintf("%d", secs), data)
 	if err != nil {
 		log.Fatal(err)
-
 	}
 	transaction.Commit()
 
