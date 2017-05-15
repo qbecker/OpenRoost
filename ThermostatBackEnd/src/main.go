@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./DAO/database"
+	//"./DAO/database"
 	"./HVACController"
 	"./SensorReader"
 	"./Yoke"
@@ -11,7 +11,7 @@ import (
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("Hello,World!")
-	database.InitDB()
+	//database.InitDB()
 	go SensorReader.StartSensorReader()
 	go hvaccontroller.StartHVACController()
 	go yoke.StartYoke()
