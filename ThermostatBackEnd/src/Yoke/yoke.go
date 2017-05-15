@@ -1,10 +1,10 @@
 package yoke
 
 import (
+	"../DAO/database"
 	"log"
 	"net/http"
 	"time"
-	"../DAO/database"
 )
 
 func StartYoke() {
@@ -24,23 +24,23 @@ func StartYoke() {
 	log.Fatal(http.ListenAndServe(":8082", yokeContr))
 }
 
-func monitorTemp(){
-	for{
+func monitorTemp() {
+	for {
 		//get current temp
 		//compare to desired temp
 		//turn on or off HVAC
-		time.Sleep(time.Duration(3) * time.Second)
+		time.Sleep(time.Duration(30) * time.Second)
 		current := database.GetCurrentTemp()
-		set :=database.GetSetTemp()
+		set := database.GetSetTemp()
 		log.Print("Current: ")
 		log.Println(current)
 		log.Print("set: ")
 		log.Println(set)
-		if(current > set){
+		if current > set {
 			log.Println("Lets turn on AC")
-		}else if(set > current){
+		} else if set > current {
 			log.Println("Lets turn on Heater")
-		}else{
+		} else {
 			log.Println("looks like we good")
 		}
 	}

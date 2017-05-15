@@ -2,34 +2,41 @@ package database
 
 var db = InitDB()
 
-func GetSetTemp()int{
-    return db.GetSetTemp()
+func GetSetTemp() int {
+	return db.GetSetTemp()
 }
 
-func GetCurrentTemp()int{
-    return db.GetCurrentTemp()
+func GetTempHome() int {
+	return db.GetTempHome()
 }
 
-func InsertHomeOrAway(data int){
-    db.InsertHomeOrAway(data)
+func GetTempAway() int {
+	return db.GetTempAway()
+}
+func GetCurrentTemp() int {
+	return db.GetCurrentTemp()
 }
 
-func InsertHomeTemp(data int){
-    db.InsertHomeTemp(data)
+func InsertHomeOrAway(data int) {
+	db.InsertHomeOrAway(data)
 }
 
-func InsertAwayTemp(data int){
-    db.InsertAwayTemp(data)
+func InsertHomeTemp(data int) {
+	db.InsertHomeTemp(data)
 }
 
-func InsertZipCode(data int){
-    db.InsertZipCode(data)
+func InsertAwayTemp(data int) {
+	db.InsertAwayTemp(data)
 }
 
-func InsertCurrentSetTemp(data int){
-    db.InsertCurrentSetTemp(data)
+func InsertZipCode(data int) {
+	db.InsertZipCode(data)
 }
 
-func InsertSensorData(data int){
-    db.InsertSensorData(data)
+func InsertCurrentSetTemp(data int) {
+	db.InsertCurrentSetTemp(data)
+}
+
+func InsertSensorData(data int) {
+	db.InsertSensorData(data)
 }

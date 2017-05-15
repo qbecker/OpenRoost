@@ -31,11 +31,54 @@ func InitDB() *DatabaseObject {
 	return &DatabaseObject{db, sync.RWMutex{}}
 }
 
+func setupDB(db *sql.DB) {
+	_, err := db.Exec(Schema1)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (d *DatabaseObject) GetTempHome() int {
+	var data int
+	d.Lock()
+	defer d.Unlock()
+	rows, err := d.db.Query(GetSetTempHomeQuery)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&data)
+		if err != nil {
+			log.Println("Err")
+		}
+	}
+	return data
+}
+
+func (d *DatabaseObject) GetTempAway() int {
+	var data int
+	d.Lock()
+	defer d.Unlock()
+	rows, err := d.db.Query(GetSetTempAwayQuery)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&data)
+		if err != nil {
+			log.Println("Err")
+		}
+	}
+	return data
+}
+
 func (d *DatabaseObject) GetSetTemp() int {
 	var data int
 	d.Lock()
 	defer d.Unlock()
-	rows, err := d.db.Query("SELECT setCurrentTemp FROM Settings WHERE APPNAME = 'ROOST'")
+	rows, err := d.db.Query(GetSetTempQuery)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -54,9 +97,8 @@ tester:
 	var data int
 	d.Lock()
 	defer d.Unlock()
-	rows, err := d.db.Query(getTemp)
+	rows, err := d.db.Query(GetTemp)
 	if err != nil {
-		log.Println("it fucked up")
 		log.Println(err)
 		goto tester
 	}
@@ -172,8 +214,6 @@ func (d *DatabaseObject) InsertCurrentSetTemp(data int) {
 }
 
 func (d *DatabaseObject) InsertSensorData(data int) {
-	log.Print("Inserting Data ")
-	log.Println(data)
 	d.Lock()
 	defer d.Unlock()
 	now := time.Now()
@@ -194,11 +234,4 @@ func (d *DatabaseObject) InsertSensorData(data int) {
 
 	}
 	transaction.Commit()
-}
-
-func setupDB(db *sql.DB) {
-	_, err := db.Exec(Schema1)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
