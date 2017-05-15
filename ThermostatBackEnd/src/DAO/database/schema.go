@@ -10,4 +10,7 @@ CREATE TABLE IF NOT EXISTS 'DAILYDATA' ('Timestamp' TEXT, 'Reading' INTEGER);
 BEGIN
 UPDATE Settings SET currentTemp = (SELECT Reading FROM DAILYDATA
 Order By Timestamp desc limit 1) WHERE APPNAME = 'ROOST';
-END;`
+END;
+ 
+
+ UPDATE Settings SET setCurrentTemp = 75 WHERE setCurrentTemp IS NULL AND APPNAME= 'ROOST'; `
