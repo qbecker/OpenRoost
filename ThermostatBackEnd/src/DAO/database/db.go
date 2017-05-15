@@ -17,6 +17,50 @@ func InitDB() {
 	ExecuteTransactionalDDL(Schema3)
 	ExecuteTransactionalDDL(Schema4)
 }
+
+func GetSetTemp()int{
+	var data int
+	transaction, err := getDB().Begin()
+	if err != nil {
+		log.Fatal(err)
+	}
+	rows, err := transaction.Query("SELECT setCurrentTemp FROM Settings WHERE APPNAME = 'ROOST'")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&data)
+		if err != nil {
+			log.Println("Err")
+		}
+	}
+	rows.Close()
+	return data
+}
+
+func GetCurrentTemp() int{
+	tester:
+	var data int
+	transaction, err := getDB().Begin()
+	if err != nil {
+		log.Fatal(err)
+	}
+	rows, err := transaction.Query(getTemp)
+	if err != nil {
+		log.Println("it fucked up")
+		goto tester
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&data)
+		if err != nil {
+			log.Println("Err")
+		}
+	}
+	rows.Close()
+	return data
+}
 func InsertHomeOrAway(data int){
 	transaction, err := getDB().Begin()
 	if err != nil {
@@ -163,6 +207,7 @@ var getDB = func() func() *sql.DB {
 	if err != nil {
 		panic(err)
 	}
+	//db.SetMaxOpenConns(1)
 	return func() *sql.DB {
 		return db
 	}
