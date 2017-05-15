@@ -15,7 +15,7 @@ func StartSensorReader() {
 	}
 }
 func readSensor() {
-	data := rand.Intn(50)
+	data := rand.Intn(100)
 	writeData(data)
 }
 

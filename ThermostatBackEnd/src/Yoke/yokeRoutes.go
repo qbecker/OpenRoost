@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func isHome(w http.ResponseWriter, r *http.Request){
+func isHome(w http.ResponseWriter, r *http.Request) {
 	log.Println("Attempting to set isHome from yoke")
 	log.Println(r.URL.Path)
 	temp := strings.Split(r.URL.Path, "/")
@@ -21,30 +21,29 @@ func isHome(w http.ResponseWriter, r *http.Request){
 		io.WriteString(w, "denied")
 
 	} else {
-		if i > 1{
+		if i > 1 {
 			io.WriteString(w, "denied")
-		}else{
+		} else {
 			log.Println(i)
 			database.InsertHomeOrAway(i)
 			io.WriteString(w, "Accepted")
 		}
 	}
 }
-func isAway(w http.ResponseWriter, r *http.Request){
+func isAway(w http.ResponseWriter, r *http.Request) {
 	log.Println("Attempting to set isAway from yoke")
 	log.Println(r.URL.Path)
 	temp := strings.Split(r.URL.Path, "/")
 	log.Println(temp[2])
 	i, err := strconv.Atoi(temp[2])
 	if err != nil {
-		// handle error
 		log.Println(err)
 		io.WriteString(w, "denied")
 
 	} else {
-		if i > 1{
+		if i > 1 {
 			io.WriteString(w, "denied")
-		}else{
+		} else {
 			log.Println(i)
 			database.InsertHomeOrAway(i)
 			io.WriteString(w, "Accepted")
@@ -71,7 +70,7 @@ func setTemp(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func setZipCode(w http.ResponseWriter, r *http.Request){
+func setZipCode(w http.ResponseWriter, r *http.Request) {
 	log.Println("Attempting to set zip code from yoke")
 	log.Println(r.URL.Path)
 	temp := strings.Split(r.URL.Path, "/")
@@ -88,7 +87,7 @@ func setZipCode(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-func setHomeTemp(w http.ResponseWriter, r *http.Request){
+func setHomeTemp(w http.ResponseWriter, r *http.Request) {
 	log.Println("Attempting to set home temp from yoke")
 	log.Println(r.URL.Path)
 	temp := strings.Split(r.URL.Path, "/")
@@ -105,7 +104,7 @@ func setHomeTemp(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-func setAwayTemp(w http.ResponseWriter, r *http.Request){
+func setAwayTemp(w http.ResponseWriter, r *http.Request) {
 	log.Println("Attempting to set away temp from yoke")
 	log.Println(r.URL.Path)
 	temp := strings.Split(r.URL.Path, "/")
@@ -148,5 +147,9 @@ func fanOff(w http.ResponseWriter, r *http.Request) {
 }
 func getStatus(w http.ResponseWriter, r *http.Request) {
 	log.Println("Attempting to get status from yoke")
+	status := createStatus()
+	log.Println(status)
+	log.Println(status.setTemp)
+	//Next step actually return as JSON
 	io.WriteString(w, "Accepted")
 }

@@ -1,61 +1,126 @@
 package database
 
-import _ "github.com/mattn/go-sqlite3"
-import "fmt"
-import "log"
-import "database/sql"
-import "time"
+import (
+	_ "github.com/mattn/go-sqlite3"
+
+	"database/sql"
+	"fmt"
+	"log"
+	"sync"
+	"time"
+)
+
+type DatabaseObject struct {
+	db *sql.DB
+	sync.RWMutex
+}
 
 const (
 	dbFile = "roost.db"
 	driver = "sqlite3"
 )
 
-func InitDB() {
-	ExecuteTransactionalDDL(Schema1)
-	ExecuteTransactionalDDL(Schema2)
-	ExecuteTransactionalDDL(Schema3)
-	ExecuteTransactionalDDL(Schema4)
+func InitDB() *DatabaseObject {
+	log.Println("starting db in db.go")
+	db, err := sql.Open("sqlite3", "database_file.sqlite")
+	if err != nil {
+		log.Fatal("could not open sqlite3 database file", err)
+	}
+	//defer db.Close()
+	setupDB(db)
+	return &DatabaseObject{db, sync.RWMutex{}}
 }
-func InsertHomeOrAway(data int){
-	transaction, err := getDB().Begin()
+
+func setupDB(db *sql.DB) {
+	_, err := db.Exec(Schema1)
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func (d *DatabaseObject) GetTempHome() int {
+	var data int
+	d.Lock()
+	defer d.Unlock()
+	rows, err := d.db.Query(GetSetTempHomeQuery)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&data)
+		if err != nil {
+			log.Println("Err")
+		}
+	}
+	return data
+}
+
+func (d *DatabaseObject) GetTempAway() int {
+	var data int
+	d.Lock()
+	defer d.Unlock()
+	rows, err := d.db.Query(GetSetTempAwayQuery)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&data)
+		if err != nil {
+			log.Println("Err")
+		}
+	}
+	return data
+}
+
+func (d *DatabaseObject) GetSetTemp() int {
+	var data int
+	d.Lock()
+	defer d.Unlock()
+	rows, err := d.db.Query(GetSetTempQuery)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&data)
+		if err != nil {
+			log.Println("Err")
+		}
+	}
+	return data
+}
+
+func (d *DatabaseObject) GetCurrentTemp() int {
+tester:
+	var data int
+	d.Lock()
+	defer d.Unlock()
+	rows, err := d.db.Query(GetTemp)
+	if err != nil {
+		log.Println(err)
+		goto tester
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&data)
+		if err != nil {
+			log.Println("Err")
+		}
+	}
+	return data
+}
+func (d *DatabaseObject) InsertHomeOrAway(data int) {
+	d.Lock()
+	defer d.Unlock()
+	transaction, err := d.db.Begin()
+	if err != nil {
+		fmt.Printf("begin. Exec error=%s", err)
+		return
 	}
 	defer transaction.Commit()
-	statement, err := transaction.Prepare(InsertIsHome)
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = statement.Exec(data)
-	if err != nil {
-		log.Fatal(err)
-	}
-	transaction.Commit()
-}
-func InsertHomeTemp(data int){
-	transaction, err := getDB().Begin()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer transaction.Commit()
-	statement, err := transaction.Prepare(InsertHome)
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = statement.Exec(data)
-	if err != nil {
-		log.Fatal(err)
-	}
-	transaction.Commit()
-}
-func InsertAwayTemp(data int){
-	transaction, err := getDB().Begin()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer transaction.Commit()
-	statement, err := transaction.Prepare(InsertAway)
+	statement, err := transaction.Prepare(InsertSensorDataQuery)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -66,13 +131,56 @@ func InsertAwayTemp(data int){
 	}
 	transaction.Commit()
 }
-func InsertZipCode(data int){
-	transaction, err := getDB().Begin()
+func (d *DatabaseObject) InsertHomeTemp(data int) {
+	d.Lock()
+	defer d.Unlock()
+	transaction, err := d.db.Begin()
+	if err != nil {
+		fmt.Printf("begin. Exec error=%s", err)
+		return
+	}
+	defer transaction.Commit()
+	statement, err := transaction.Prepare(InsertSensorDataQuery)
 	if err != nil {
 		log.Fatal(err)
 	}
+	_, err = statement.Exec(data)
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	transaction.Commit()
+}
+func (d *DatabaseObject) InsertAwayTemp(data int) {
+	d.Lock()
+	defer d.Unlock()
+	transaction, err := d.db.Begin()
+	if err != nil {
+		fmt.Printf("begin. Exec error=%s", err)
+		return
+	}
 	defer transaction.Commit()
-	statement, err := transaction.Prepare(InsertZip)
+	statement, err := transaction.Prepare(InsertSensorDataQuery)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = statement.Exec(data)
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	transaction.Commit()
+}
+func (d *DatabaseObject) InsertZipCode(data int) {
+	d.Lock()
+	defer d.Unlock()
+	transaction, err := d.db.Begin()
+	if err != nil {
+		fmt.Printf("begin. Exec error=%s", err)
+		return
+	}
+	defer transaction.Commit()
+	statement, err := transaction.Prepare(InsertSensorDataQuery)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -84,10 +192,13 @@ func InsertZipCode(data int){
 	transaction.Commit()
 }
 
-func InsertCurrentSetTemp(data int) {
-	transaction, err := getDB().Begin()
+func (d *DatabaseObject) InsertCurrentSetTemp(data int) {
+	d.Lock()
+	defer d.Unlock()
+	transaction, err := d.db.Begin()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("begin. Exec error=%s", err)
+		return
 	}
 	defer transaction.Commit()
 	statement, err := transaction.Prepare(InsertCurrent)
@@ -102,68 +213,25 @@ func InsertCurrentSetTemp(data int) {
 	transaction.Commit()
 }
 
-func InsertSensorData(data int) {
-	transaction, err := getDB().Begin()
+func (d *DatabaseObject) InsertSensorData(data int) {
+	d.Lock()
+	defer d.Unlock()
+	now := time.Now()
+	secs := now.Unix()
+	transaction, err := d.db.Begin()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("begin. Exec error=%s", err)
+		return
 	}
 	defer transaction.Commit()
 	statement, err := transaction.Prepare(InsertSensorDataQuery)
 	if err != nil {
 		log.Fatal(err)
 	}
-	now := time.Now()
-	 secs := now.Unix()
-	 log.Println(secs)
 	_, err = statement.Exec(fmt.Sprintf("%d", secs), data)
 	if err != nil {
 		log.Fatal(err)
+
 	}
 	transaction.Commit()
-
 }
-func ExecuteTransactionalSingleRowQuery(query string, selection []interface{}, targets ...interface{}) error {
-	transaction, err := getDB().Begin()
-	if err != nil {
-		return err
-	}
-	defer transaction.Commit()
-	statement, err := transaction.Prepare(query)
-	if err != nil {
-		return err
-	}
-	row := statement.QueryRow(selection...)
-	if err := row.Scan(targets...); err != nil {
-		transaction.Rollback()
-		return err
-	}
-	return nil
-}
-
-func ExecuteTransactionalDDL(query string, args ...interface{}) error {
-	transaction, err := getDB().Begin()
-	defer transaction.Commit()
-	if err != nil {
-		return err
-	}
-	stmt, err := transaction.Prepare(query)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-	if _, err := stmt.Exec(args...); err != nil {
-		transaction.Rollback()
-		return err
-	}
-	return nil
-}
-
-var getDB = func() func() *sql.DB {
-	db, err := sql.Open(driver, "../foo.db")
-	if err != nil {
-		panic(err)
-	}
-	return func() *sql.DB {
-		return db
-	}
-}()
