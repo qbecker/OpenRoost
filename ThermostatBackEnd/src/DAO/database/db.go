@@ -1,10 +1,9 @@
 package database
 
 import (
-	_ "github.com/mattn/go-sqlite3"
-
 	"database/sql"
 	"fmt"
+	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"sync"
 	"time"
@@ -140,7 +139,7 @@ func (d *DatabaseObject) InsertHomeTemp(data int) {
 		return
 	}
 	defer transaction.Commit()
-	statement, err := transaction.Prepare(InsertSensorDataQuery)
+	statement, err := transaction.Prepare(InsertHomeQuery)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -180,7 +179,7 @@ func (d *DatabaseObject) InsertZipCode(data int) {
 		return
 	}
 	defer transaction.Commit()
-	statement, err := transaction.Prepare(InsertSensorDataQuery)
+	statement, err := transaction.Prepare(InsertZipQuery)
 	if err != nil {
 		log.Fatal(err)
 	}
