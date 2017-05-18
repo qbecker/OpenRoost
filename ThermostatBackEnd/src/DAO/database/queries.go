@@ -11,4 +11,5 @@ const (
 	GetSetTempQuery       = "SELECT setCurrentTemp FROM Settings WHERE APPNAME = 'ROOST'"
 	GetSetTempHomeQuery   = "SELECT setTempHome FROM Settings WHERE APPNAME = 'ROOST'"
 	GetSetTempAwayQuery   = "SELECT setTempAway FROM Settings WHERE APPNAME = 'ROOST'"
+	InsertLogMessageQuery = "INSERT INTO Log(Timestamp, Message) VALUES(?, ?)"
 )
