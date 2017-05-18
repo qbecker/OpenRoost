@@ -96,7 +96,7 @@ tester:
 	var data int
 	d.Lock()
 	defer d.Unlock()
-	rows, err := d.db.Query(GetTemp)
+	rows, err := d.db.Query(GetCurrentTempQuery)
 	if err != nil {
 		log.Println(err)
 		goto tester
