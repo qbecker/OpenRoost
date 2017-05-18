@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 	"../utils"
+	"../logger"
 )
 
 func StartYoke() {
@@ -40,9 +41,11 @@ func monitorTemp() {
 		if current > set {
 			log.Println("Lets turn on AC")
 			utils.SendHttpRequest("POST", "Http://localhost:8081/coolon")
+			logger.WriteLog("Turning on AC")
 		} else if set > current {
 			log.Println("Lets turn on Heater")
 			utils.SendHttpRequest("POST", "Http://localhost:8081/heaton")
+			logger.WriteLog("Turning on Heater")
 		} else {
 			log.Println("looks like we good")
 		}

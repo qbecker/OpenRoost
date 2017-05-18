@@ -40,3 +40,7 @@ func InsertCurrentSetTemp(data int) {
 func InsertSensorData(data int) {
 	db.InsertSensorData(data)
 }
+
+func InsertLogMessage(data string){
+	db.InsertLogMessage(data)
+}

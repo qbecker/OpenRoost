@@ -234,3 +234,26 @@ func (d *DatabaseObject) InsertSensorData(data int) {
 	}
 	transaction.Commit()
 }
+
+func (d *DatabaseObject) InsertLogMessage(data string){
+	d.Lock()
+	defer d.Unlock()
+	now := time.Now()
+	secs := now.Unix()
+	transaction, err := d.db.Begin()
+	if err != nil {
+		fmt.Printf("begin. Exec error=%s", err)
+		return
+	}
+	defer transaction.Commit()
+	statement, err := transaction.Prepare(InsertLogMessageQuery)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = statement.Exec(fmt.Sprintf("%d", secs), data)
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	transaction.Commit()
+}
