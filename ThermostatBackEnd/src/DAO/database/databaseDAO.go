@@ -1,5 +1,7 @@
 package database
 
+
+//interface to database, keeping the options for diffrent database systems open
 var db = InitDB()
 
 func GetSetTemp() int {

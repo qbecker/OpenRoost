@@ -9,7 +9,6 @@ import (
 func coolOn(w http.ResponseWriter, r *http.Request) {
 	log.Println("Attempting to turn on cooling")
 	io.WriteString(w, "Accepted")
-
 }
 
 func coolOff(w http.ResponseWriter, r *http.Request) {
