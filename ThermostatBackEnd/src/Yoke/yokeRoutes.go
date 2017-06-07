@@ -54,6 +54,8 @@ func isAway(w http.ResponseWriter, r *http.Request) {
 }
 
 func setTemp(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept", "*")
 	log.Println("Attempting to set temp from yoke")
 	log.Println(r.URL.Path)
 	temp := strings.Split(r.URL.Path, "/")

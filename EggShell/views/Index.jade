@@ -12,6 +12,11 @@ block content
                     br
                     br
                     span.label.label-default#CurrentTemp(,='')
+                    br
+                    br
+                    span.label.label-default#SetTemp(,='')
+                    input#changeTemp(type='number', value='0', min='0', max='100' oninput='updateTemp()')
+
                   br
                   .btn-group(role='group', aria-label='...')
 
@@ -29,11 +34,24 @@ block content
                     setUp();
                 });
 
+
                 function setUp(){
-
-
                     getStatus();
                 }
+
+                function updateTemp(){
+                 var tempPicker = document.getElementById("changeTemp");
+                 var request = getRequestObject();
+                  request.open("POST", "http://localhost:8082/settemp/" + tempPicker.value, true);
+                  request.onreadystatechange = function(){
+                       if((request.readyState == 4) && (request.status == 200)){
+                           getStatus();
+                    }
+
+                  }
+                  console.log("sending")
+                  request.send();
+                  }
 
                   function getStatus(){
                       console.log("getting status")
@@ -43,8 +61,13 @@ block content
                       request.onreadystatechange = function(){
                        if((request.readyState == 4) && (request.status == 200)){
                            var currentTempLabel = document.getElementById("CurrentTemp");
+                           var setTempLabel = document.getElementById("SetTemp");
+                           var tempPicker = document.getElementById("changeTemp");
                            console.log(request.responseText);
-                           currentTempLabel.innerText = "Current Temperature: " + request.responseText
+                           var statusObj = JSON.parse(request.responseText)
+                           currentTempLabel.innerText = "Current Temperature: " + statusObj.currentTemp
+                           setTempLabel.innerText = "Temperature set at: " + statusObj.setTemp
+                           tempPicker.value = statusObj.setTemp
                     }
 
                   }
