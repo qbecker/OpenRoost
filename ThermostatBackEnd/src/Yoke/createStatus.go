@@ -8,4 +8,6 @@ func createStatus() Status {
 		homeTemp:    database.GetTempHome(),
 		awayTemp:    database.GetTempAway()}
 	return ret
+
+	
 }
