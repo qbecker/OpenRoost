@@ -19,6 +19,7 @@
   "homepage": "https://github.com/qbecker/OpenRoost#readme",
   "dependencies": {
     "express": "^4.15.3",
-    "express-router": "0.0.1"
+    "express-router": "0.0.1",
+    "jade": "^1.11.0"
   }
 }

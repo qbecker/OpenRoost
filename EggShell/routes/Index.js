@@ -4,7 +4,7 @@ var router = express.Router();
 
 
 router.get('/',function(req, res){
-    res.send("Hello world")
+    res.render('Index.jade', {} );
 });
 
 

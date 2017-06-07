@@ -1,0 +1,270 @@
+extends layout
+block content
+    head
+        body
+            .container
+              .row
+                .col-sm-6
+                  p Thermostat:
+
+                  h3
+                    | Status:
+                    br
+                    span.label.label-default#OrderNumber(,='')
+                  br
+                  .btn-group(role='group', aria-label='...')
+
+                  br
+                  input#CustomerName(type='text', placeholder='Set Temp')
+                  br
+                  input#customerPhoneNum(type='tel', placeholder='Customer Phone #')
+                  br
+                  input#customerAddress(type='text', placeholder='Customer Address')
+                  .dropdown
+                      button#dropdownMenu1.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='true')
+                        | Status
+                        span.caret
+                      ul.dropdown-menu#productDropDown(aria-labelledby='dropdownMenu1')
+                        li
+                          a(href='#') Action
+                        li
+                          a(href='#') Another action
+                        li
+                          a(href='#') Something else here
+                        li.divider(role='separator')
+                        li
+                          a(href='#') Separated link
+
+                  .list-group(id='Current Temperature')
+                  h3
+                    | Quick Statistics:
+                    span.label.label-default#TotalPrice(,='')
+
+
+                .col-sm-6
+                    
+
+
+
+            script.
+                document.addEventListener("DOMContentLoaded", function() {
+                    setUp();
+                });
+
+                function setUp(){
+                    var takeOutButton = document.getElementById("takeOut");
+                    var cancelButton = document.getElementById("cancel");
+                    var commentBox = document.getElementById("comment");
+                    var dineInButton = document.getElementById("dineIn");
+                    var deliveryButton = document.getElementById("delivery");
+                    var customerName = document.getElementById("CustomerName");
+                    var cutomerPhoneNum = document.getElementById("customerPhoneNum");
+                    var customerAddress = document.getElementById("customerAddress");
+                    var orderNumberLabel = document.getElementById("OrderNumber");
+                    var addToOrderButton = document.getElementById("add");
+                    addToOrderButton.onclick = (function() {
+                                     return function() {
+                                         addStagedProductToOrder();
+                                    }
+                                 })();
+                    addToOrderButton.style.visibility = "hidden";
+                    customerAddress.style.visibility = "hidden";
+                    cutomerPhoneNum.style.visibility = "hidden";
+                    customerAddress.style.visibility = "hidden";
+                    cancelButton.style.visibility = "hidden";
+                    comment.style.visibility = "hidden";
+
+                    var orderNumber = generateUID();
+                    orderNumberLabel.innerHTML = orderNumber;
+                    var order = {"Products": [], orderNumber: orderNumber, type: "", price: 0};
+                    localStorage.setItem("order", JSON.stringify(order));
+                    console.log(order);
+                    populateDropDown();
+                    populateItemList();
+                }
+
+
+                function generateUID(){
+                    return ("0000" + (Math.random()*Math.pow(36,4) << 0).toString(36)).slice(-4)
+                }
+                function generateUIDForProducts(){
+                    return ("0000" + (Math.random()*Math.pow(36,4) << 0).toString(36)).slice(-6)
+                }
+
+                function populateItemList(){
+                    var totalPrice = document.getElementById("TotalPrice");
+                    var productList = document.getElementById("Current Order");
+                    productList.innerHTML = "";
+                    temp = localStorage.getItem("order");
+                    var order = JSON.parse(temp);
+                    totalPrice.innerHTML = Number(order.price);
+                    for(var i = 0; i < order.Products.length; i++){
+                            var button = document.createElement("Button");
+                            button.innerText = order.Products[i].ProductName + ":";
+                            for(var j = 0; j < order.Products[i].Additionals.length; j++){
+                                button.innerText+= " "+ order.Products[i].Additionals[j].Name + ",";
+
+                         }
+                    button.className = "list-group-item";
+                    productList.appendChild(button);
+                    }
+
+                }
+
+                function populateDropDown(){
+                    var productDropDown = document.getElementById("productDropDown");
+                    console.log(productDropDown);
+                    var request = getRequestObject();
+                    request.open("GET", "/products/list", true);
+                    request.onreadystatechange = function(){
+                     if((request.readyState == 4) && (request.status == 200)){
+                         var answer = JSON.parse(request.responseText);
+                         productDropDown.innerHTML = "";
+                         for(var i = 0; i < answer.Products.length; i++){
+                           var br = document.createElement("br");
+                           var button = document.createElement("Button");
+                           button.innerText = answer.Products[i].Name;
+                           button.className = "list-group-item";
+                           var name = answer.Products[i].Name;
+                           button.onclick = (function() {
+                             var currentI = name;
+                             return function() {
+
+                                 stageProduct(currentI);
+                            }
+                         })();
+                          productDropDown.appendChild(button);
+                      }
+                    }
+                  }
+                   request.send();
+                }
+
+                function stageProduct(productName){
+                      clearStagedProduct();
+                      var itemNumber = generateUIDForProducts();
+                      var stagedProduct = {ItemNumber: itemNumber, ProductName: "", Additionals:[], Price:0}
+                      var stageProductLabel = document.getElementById("StagedProduct");
+                      var stageProductPriceLabel = document.getElementById("StagedProductPrice");
+                      var stageProductTotalPriceLable = document.getElementById("StagedProductTotalPrice");
+                      console.log(stageProductLabel);
+                      var additionalsMatrix = document.getElementById("additionalsMatrix");
+                      var request = getRequestObject();
+                      request.open("GET","/products/one/" + productName, true);
+                      request.onreadystatechange = function(){
+                        if((request.readyState == 4) && (request.status == 200)){
+                            var answer = request.responseText;
+                            var answer = JSON.parse(answer);
+                            stagedProduct.ProductName = answer.Name;
+                            stagedProduct.Price = answer.BasePrice;
+                            console.log(stagedProduct);
+                            localStorage.setItem("StagedProduct", JSON.stringify(stagedProduct));
+                            stageProductLabel.innerHTML = answer.Name;
+                            stageProductPriceLabel.innerHTML = answer.BasePrice;
+                            stageProductTotalPriceLable.innerHTML = answer.BasePrice;
+                            additionalsMatrix.innerHTML = "";
+                            for(var i = 0; i < answer.Additionals.length; i++){
+                              if(answer.Additionals[i] != undefined){
+                                var br = document.createElement("br");
+                                var button = document.createElement("Button");
+                                button.innerText = answer.Additionals[i].additional;
+                                button.className = "btn btn-default";
+                                button.onclick = (function() {
+                                     var currentI = answer.Additionals[i].additional;
+                                     var price = answer.Additionals[i].Price;
+                                     return function() {
+                                         addToStagedProduct(currentI, price);
+                                    }
+                                 })();
+                                additionalsMatrix.appendChild(button);
+                              }
+                            }
+                        }
+                      }
+                       request.send(productName);
+                }
+
+                function addToStagedProduct(additionalName, price){
+                    var temp = localStorage.getItem("StagedProduct");
+                    var stagedProduct = JSON.parse(temp);
+                    var additionalID = generateUIDForProducts();
+                    var additionalItem = {Name:additionalName, Price: price, ID: additionalID};
+                    stagedProduct.Additionals.push(additionalItem);
+
+                    var stagedAdditionalList = document.getElementsByName("StagedAdditionals");
+                    var stageProductTotalPriceLable = document.getElementById("StagedProductTotalPrice");
+                    stageProductTotalPriceLable.innerHTML = Number(stageProductTotalPriceLable.innerHTML) + Number(price);
+                    stagedProduct.Price =  stageProductTotalPriceLable.innerHTML;
+                    console.log(stagedProduct);
+                    var button = document.createElement("Button");
+                    button.innerText = additionalName;
+                    button.className = "list-group-item";
+                    button.id = Math.random().toString(36);
+                    stagedAdditionalList[0].appendChild(button);
+                    localStorage.setItem("StagedProduct", JSON.stringify(stagedProduct));
+                    button.onclick = (function() {
+                                     var currentID = button.id;
+                                     var currentPrice = price;
+                                     var currentAdditionalID = additionalID;
+                                     return function() {
+                                         removeFromStagedProduct(currentID, currentPrice, currentAdditionalID);
+                                    }
+                                 })();
+                }
+
+                function addStagedProductToOrder(){
+                    var temp = localStorage.getItem("StagedProduct");
+                    var stagedProduct = JSON.parse(temp);
+                    temp = localStorage.getItem("order");
+                    var order = JSON.parse(temp);
+                    order.Products.push(stagedProduct);
+                    order.price = Number(order.price) + Number(stagedProduct.Price);
+                    console.log(order);
+                    localStorage.setItem("order", JSON.stringify(order));
+                    clearStagedProduct();
+                    populateItemList();
+
+                }
+
+                function clearStagedProduct(){
+                    var stageProductLabel = document.getElementById("StagedProduct");
+                    var stageProductPriceLabel = document.getElementById("StagedProductPrice");
+                    var stageProductTotalPriceLable = document.getElementById("StagedProductTotalPrice");
+                    var stagedAdditionalList = document.getElementsByName("StagedAdditionals");
+                    var additionalsMatrix = document.getElementById("additionalsMatrix");
+                    var stagedAdditionalList = document.getElementsByName("StagedAdditionals");
+                    stageProductLabel.innerHTML = "";
+                    stageProductPriceLabel.innerHTML = "";
+                    stageProductTotalPriceLable.innerHTML = "";
+                    stagedAdditionalList[0].innerHTML = "";
+                    additionalsMatrix.innerHTML = "";
+
+                }
+
+
+
+
+                function removeFromStagedProduct(additionalName, price, currentAdditionalID){
+                  var temp = localStorage.getItem("StagedProduct");
+                  var stagedProduct = JSON.parse(temp);
+                  for(var i = 0; i < stagedProduct.Additionals.length; i++){
+                      if(currentAdditionalID == stagedProduct.Additionals[i].ID){
+                          stagedProduct.Additionals.splice(i, 1);
+                      }
+                  }
+                  var elementToremove = document.getElementById(additionalName);
+                  var stageProductTotalPriceLable = document.getElementById("StagedProductTotalPrice");
+                  stageProductTotalPriceLable.innerHTML = Number(stageProductTotalPriceLable.innerHTML) - Number(price);
+                  stagedProduct.Price = stageProductTotalPriceLable.innerHTML;
+                  console.log(stagedProduct);
+                  localStorage.setItem("StagedProduct", JSON.stringify(stagedProduct));
+                  elementToremove.remove();
+                }
+
+                function getRequestObject() {
+                  if (window.XMLHttpRequest) {
+                    return(new XMLHttpRequest());
+                    }else {
+                    return(null);
+                  }
+                }
