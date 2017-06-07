@@ -3,10 +3,10 @@ package yoke
 import "../DAO/database"
 
 func createStatus() Status {
-	ret := Status{setTemp: database.GetSetTemp(),
-		currentTemp: database.GetCurrentTemp(),
-		homeTemp:    database.GetTempHome(),
-		awayTemp:    database.GetTempAway()}
+	ret := Status{SetTemp: database.GetSetTemp(),
+		CurrentTemp: database.GetCurrentTemp(),
+		HomeTemp:    database.GetTempHome(),
+		AwayTemp:    database.GetTempAway()}
 	return ret
 
 }

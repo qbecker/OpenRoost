@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"fmt"
+  "encoding/json"
 )
 
 func isHome(w http.ResponseWriter, r *http.Request) {
@@ -146,10 +148,23 @@ func fanOff(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "Accepted")
 }
 func getStatus(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept", "*")
 	log.Println("Attempting to get status from yoke")
 	status := createStatus()
-	log.Println(status)
-	log.Println(status.setTemp)
-	//Next step actually return as JSON
-	io.WriteString(w, "Accepted")
+	if r.Method == "GET" {
+		log.Println(status)
+
+		log.Println("ITS A GETTTTTTTTT")
+		b, err := json.Marshal(status)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+		 w.WriteHeader(http.StatusOK)
+		 log.Println(string(b))
+		//Next step actually return as JSON
+		w.Write(b)
+    }
+
 }

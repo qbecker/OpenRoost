@@ -1,8 +1,8 @@
 package yoke
 
 type Status struct {
-	setTemp     int `json:"setTemp"`
-	currentTemp int `json:"currentTemp"`
-	homeTemp    int `json:"homeTemp"`
-	awayTemp    int `json:"awayTemp"`
+	SetTemp     int `json:"setTemp"`
+	CurrentTemp int `json:"currentTemp"`
+	HomeTemp    int `json:"homeTemp"`
+	AwayTemp    int `json:"awayTemp"`
 }
