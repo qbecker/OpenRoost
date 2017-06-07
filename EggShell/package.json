@@ -1,0 +1,24 @@
+{
+  "name": "eggshell",
+  "version": "1.0.0",
+  "description": "front end for open roost thermostat",
+  "main": "Server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qbecker/OpenRoost.git"
+  },
+  "author": "Quinten Becker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/qbecker/OpenRoost/issues"
+  },
+  "homepage": "https://github.com/qbecker/OpenRoost#readme",
+  "dependencies": {
+    "express": "^4.15.3",
+    "express-router": "0.0.1"
+  }
+}
