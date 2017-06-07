@@ -12,6 +12,8 @@ import (
 )
 
 func isHome(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept", "*")
 	log.Println("Attempting to set isHome from yoke")
 	log.Println(r.URL.Path)
 	temp := strings.Split(r.URL.Path, "/")
@@ -21,7 +23,6 @@ func isHome(w http.ResponseWriter, r *http.Request) {
 		// handle error
 		log.Println(err)
 		io.WriteString(w, "denied")
-
 	} else {
 		if i > 1 {
 			io.WriteString(w, "denied")
@@ -33,6 +34,8 @@ func isHome(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func isAway(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept", "*")
 	log.Println("Attempting to set isAway from yoke")
 	log.Println(r.URL.Path)
 	temp := strings.Split(r.URL.Path, "/")
@@ -126,26 +129,38 @@ func setAwayTemp(w http.ResponseWriter, r *http.Request) {
 }
 
 func coolOn(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept", "*")
 	log.Println("Attempting to turn on cooling from yoke")
 	io.WriteString(w, "Accepted")
 }
 func heatOn(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept", "*")
 	log.Println("Attempting to turn on heat from yoke")
 	io.WriteString(w, "Accepted")
 }
 func coolOff(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept", "*")
 	log.Println("Attempting to turn off cooling from yoke")
 	io.WriteString(w, "Accepted")
 }
 func heatOff(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept", "*")
 	log.Println("Attempting to turn off  heating from yoke")
 	io.WriteString(w, "Accepted")
 }
 func fanOn(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept", "*")
 	log.Println("Attempting to turn on fan from yoke")
 	io.WriteString(w, "Accepted")
 }
 func fanOff(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept", "*")
 	log.Println("Attempting to turn off fan from yoke")
 	io.WriteString(w, "Accepted")
 }
