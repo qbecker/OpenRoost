@@ -9,5 +9,4 @@ func createStatus() Status {
 		awayTemp:    database.GetTempAway()}
 	return ret
 
-	
 }
