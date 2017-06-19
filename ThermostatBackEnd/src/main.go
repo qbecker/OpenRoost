@@ -11,6 +11,7 @@ import (
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("Hello,World!")
+	//hello
 	//database.InitDB()
 	go SensorReader.StartSensorReader()
 	go hvaccontroller.StartHVACController()
